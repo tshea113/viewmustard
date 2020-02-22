@@ -12,15 +12,16 @@ UTFT myGLCD(ILI9486, 38, 39, 40, 41);
 UTFT_SdRaw myFiles(&myGLCD);
 
 volatile int buttonState = 0;   // variable for reading the pushbutton status
+volatile static unsigned long last_interrupt_time = 0;
 
 void setup()
 {
   // Initialize the pushbutton pin as an input:
-  pinMode(MODE_PIN, INPUT);
+  pinMode(MODE_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
 
   // Attach an interrupt to the ISR vector
-  attachInterrupt(0, pin_ISR, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(MODE_PIN), pin_ISR, CHANGE);
 
   // Setup the serial connection
   Serial.begin(115200);
@@ -72,6 +73,12 @@ void loop()
 }
 
 void pin_ISR() {
-  buttonState = digitalRead(MODE_PIN);
-  digitalWrite(LED_PIN, buttonState);
+  volatile unsigned long interrupt_time = millis();
+  if (interrupt_time - last_interrupt_time > 200)
+  {
+    buttonState = digitalRead(MODE_PIN);
+    digitalWrite(LED_PIN, buttonState);
+
+    last_interrupt_time = interrupt_time;
+  }
 }
