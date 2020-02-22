@@ -68,6 +68,8 @@ void loop()
 
     sprintf(imName, "%i%s", image, fileType); 
 
+    Serial.println(imName);
+
     myFiles.load(0, 0, 480, 320, imName, 1, 0);
     delay(4000);
 
