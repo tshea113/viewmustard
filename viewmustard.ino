@@ -63,8 +63,10 @@ void loop()
   {
     ready = 0;
 
-    String temp = String(image);
-    String imName = temp + ".RAW";
+    char imName[6] 
+    char fileType[4] = ".RAW"
+
+    sprintf(imName, "%i%s", image, fileType); 
 
     myFiles.load(0, 0, 480, 320, imName, 1, 0);
     delay(4000);
