@@ -63,7 +63,8 @@ void loop()
   {
     ready = 0;
 
-    String imName = to_string(image) + ".RAW";
+    String temp = String(image);
+    String imName = temp + ".RAW";
 
     myFiles.load(0, 0, 480, 320, imName, 1, 0);
     delay(4000);
