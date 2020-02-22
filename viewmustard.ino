@@ -16,7 +16,7 @@ UTFT_SdRaw myFiles(&myGLCD);
 
 
 
-volatile int image = 1;   // variable for reading the pushbutton status
+volatile int image = 0;   // variable for reading the pushbutton status
 volatile bool ready = 0;   // variable to verify ready for next image
 volatile bool newImage = 0;
 volatile static unsigned long last_interrupt_time = 0;
