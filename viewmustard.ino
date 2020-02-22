@@ -6,12 +6,19 @@
 #define MODE_PIN 3
 #define LED_PIN  13         // the number of the LED pin
 #define SD_CHIP_SELECT  53  // SD chip select pin(Arduino Mega)
+
+#define NUM_IMAGES 9
+
 SdFat sd;
 
 UTFT myGLCD(ILI9486, 38, 39, 40, 41);
 UTFT_SdRaw myFiles(&myGLCD);
 
-volatile int buttonState = 0;   // variable for reading the pushbutton status
+
+
+volatile int image = 1;   // variable for reading the pushbutton status
+volatile int ready = 0;   // variable to verify ready for next image
+volatile int newImage = 0;
 volatile static unsigned long last_interrupt_time = 0;
 
 void setup()
@@ -52,33 +59,34 @@ void setup()
 
 void loop()
 {
-  myFiles.load(0, 0, 480, 320, "01.RAW", 1, 0);
-  delay(4000);
-  myFiles.load(0, 0, 480, 320, "02.RAW", 1, 0);
-  delay(4000);
-  myFiles.load(0, 0, 480, 320, "03.RAW", 1, 0);
-  delay(4000);
-  myFiles.load(0, 0, 480, 320, "04.RAW", 1, 0);
-  delay(4000);
-  myFiles.load(0, 0, 480, 320, "05.RAW", 1, 0);
-  delay(4000);
-  myFiles.load(0, 0, 480, 320, "06.RAW", 1, 0);
-  delay(4000);
-  myFiles.load(0, 0, 480, 320, "07.RAW", 1, 0);
-  delay(4000);
-  myFiles.load(0, 0, 480, 320, "08.RAW", 1, 0);
-  delay(4000);
-  myFiles.load(0, 0, 480, 320, "09.RAW", 1, 0);
-  delay(4000);
+  if (newImage)
+  {
+    ready = 0;
+
+    String imName = to_string(image) + ".RAW";
+
+    myFiles.load(0, 0, 480, 320, imName, 1, 0);
+    delay(4000);
+
+    newImage = 0;
+    ready = 1;
+  }
 }
 
 void pin_ISR() {
   volatile unsigned long interrupt_time = millis();
   if (interrupt_time - last_interrupt_time > 200)
   {
-    buttonState = !buttonState;
-    digitalWrite(LED_PIN, buttonState);
+    if (ready)
+    {
+      if (image < NUM_IMAGES) image++;
+      else 
+      {
+        image = 1;
+      }
 
+      newImage = 1;
+    }
     last_interrupt_time = interrupt_time;
   }
 }
