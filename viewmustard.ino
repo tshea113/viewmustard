@@ -64,9 +64,8 @@ void loop()
     ready = 0;
 
     char imName[6]; 
-    char fileType[4] = ".RAW";
 
-    sprintf(imName, "%i%s", image, fileType); 
+    sprintf(imName, "%i.RAW", image); 
 
     Serial.println(imName);
 
