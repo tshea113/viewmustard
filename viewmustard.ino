@@ -63,8 +63,8 @@ void loop()
   {
     ready = 0;
 
-    char imName[6] 
-    char fileType[4] = ".RAW"
+    char imName[6]; 
+    char fileType[4] = ".RAW";
 
     sprintf(imName, "%i%s", image, fileType); 
 
