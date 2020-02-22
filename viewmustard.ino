@@ -20,7 +20,7 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
 
   // Attach an interrupt to the ISR vector
-  attachInterrupt(0, pin_ISR, cHANGE);
+  attachInterrupt(0, pin_ISR, CHANGE);
 
   // Setup the serial connection
   Serial.begin(115200);
@@ -72,6 +72,6 @@ void loop()
 }
 
 void pin_ISR() {
-  buttonState = digitalRead(buttonPin);
-  digitalWrite(ledPin, buttonState);
+  buttonState = digitalRead(MODE_PIN);
+  digitalWrite(LED_PIN, buttonState);
 }
