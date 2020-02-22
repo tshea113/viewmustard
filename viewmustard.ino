@@ -4,20 +4,30 @@
 #include <UTFT_SdRaw.h>
 
 #define MODE_PIN 3
+#define LED_PIN  13         // the number of the LED pin
 #define SD_CHIP_SELECT  53  // SD chip select pin(Arduino Mega)
 SdFat sd;
 
 UTFT myGLCD(ILI9486, 38, 39, 40, 41);
 UTFT_SdRaw myFiles(&myGLCD);
 
-volatile uint8_t mode = 0;
-volatile static unsigned long last_interrupt_time = 0;
+volatile int buttonState = 0;   // variable for reading the pushbutton status
 
 void setup()
 {
+  // Initialize the pushbutton pin as an input:
   pinMode(MODE_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+
+  // Attach an interrupt to the ISR vector
+  attachInterrupt(0, pin_ISR, cHANGE);
+
+  // Setup the serial connection
   Serial.begin(115200);
+
   delay(10);
+
+  // Setup the SD card
   bool mysd = 0;
   while (!mysd)
   {
@@ -32,6 +42,8 @@ void setup()
       Serial.println(F("Card initialised."));
     }
   }
+
+  // Init the LCD
   Serial.println(F("Initialising LCD."));
   myGLCD.InitLCD();
   myGLCD.clrScr();
@@ -57,4 +69,9 @@ void loop()
   delay(4000);
   myFiles.load(0, 0, 480, 320, "09.RAW", 1, 0);
   delay(4000);
+}
+
+void pin_ISR() {
+  buttonState = digitalRead(buttonPin);
+  digitalWrite(ledPin, buttonState);
 }
