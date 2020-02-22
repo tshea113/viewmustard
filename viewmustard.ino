@@ -21,7 +21,7 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
 
   // Attach an interrupt to the ISR vector
-  attachInterrupt(digitalPinToInterrupt(MODE_PIN), pin_ISR, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(MODE_PIN), pin_ISR, RISING);
 
   // Setup the serial connection
   Serial.begin(115200);
@@ -76,7 +76,7 @@ void pin_ISR() {
   volatile unsigned long interrupt_time = millis();
   if (interrupt_time - last_interrupt_time > 200)
   {
-    buttonState = digitalRead(MODE_PIN);
+    buttonState = !buttonState;
     digitalWrite(LED_PIN, buttonState);
 
     last_interrupt_time = interrupt_time;
